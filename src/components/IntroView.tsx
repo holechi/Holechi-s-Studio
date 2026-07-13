@@ -121,7 +121,7 @@ export const IntroView: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <span className="text-[11px] font-bold text-[#4B352D] dark:text-[#DFB775] tracking-tight block">
-                  홀치의 연남동 공방
+                  홀치의 창원시 상남동 공방
                 </span>
                 <span className="text-[9px] text-[#746D68] font-mono block">
                   LAT: 37.5583° N / LON: 126.9240° E
