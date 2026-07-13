@@ -351,9 +351,9 @@ export const WriteModal: React.FC<WriteModalProps> = ({ type, onClose }) => {
 
           {/* IMAGE URL PRESETS (For Story, Travel, Photo, Friend) */}
           {(type === 'story' || type === 'photo' || type === 'travel' || type === 'friend') && (
-            <div className="space-y-2">
-              <label className="block text-xs font-semibold text-[#746D68] dark:text-[#9E958E] mb-1.5">
-                감성 사진 선택 (프리셋 선택 또는 URL 입력)
+            <div className="space-y-3">
+              <label className="block text-xs font-semibold text-[#746D68] dark:text-[#9E958E]">
+                감성 사진 선택 (프리셋 선택, 이미지 주소 입력 또는 파일 직접 업로드)
               </label>
               
               {/* Presets flex container */}
@@ -374,14 +374,74 @@ export const WriteModal: React.FC<WriteModalProps> = ({ type, onClose }) => {
                 ))}
               </div>
 
-              <input
-                id="form-image-url"
-                type="text"
-                placeholder="또는 직접 가져온 이미지 URL 주소를 입력하세요"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                className="w-full h-10 px-3 rounded-xl border border-[#E6DED5] dark:border-[#3D3330] bg-white dark:bg-[#1A1614] focus:outline-none focus:ring-2 focus:ring-[#C69A52]/20 text-xs"
-              />
+              {/* Direct Input & Upload Button */}
+              <div className="space-y-2">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    id="form-image-url"
+                    type="text"
+                    placeholder="직접 가져온 이미지 URL 주소를 입력하세요"
+                    value={imageUrl.startsWith('data:') ? '📂 직접 업로드한 로컬 이미지' : imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    disabled={imageUrl.startsWith('data:')}
+                    className="flex-1 h-10 px-3 rounded-xl border border-[#E6DED5] dark:border-[#3D3330] bg-white dark:bg-[#1A1614] focus:outline-none focus:ring-2 focus:ring-[#C69A52]/20 text-xs disabled:opacity-75 disabled:bg-gray-100 dark:disabled:bg-zinc-800"
+                  />
+                  
+                  <label className="h-10 px-4 rounded-xl bg-[#C69A52] hover:bg-[#b0843e] text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+                    <span>📱 폰/PC 사진 올리기</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            if (typeof reader.result === 'string') {
+                              setImageUrl(reader.result);
+                            }
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+
+                {/* Reset button if custom upload exists */}
+                {imageUrl.startsWith('data:') && (
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => setImageUrl('')}
+                      className="text-[11px] text-red-500 hover:underline"
+                    >
+                      업로드한 사진 지우기 ✕
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Image Thumbnail Preview */}
+              {imageUrl && (
+                <div className="mt-2 p-2 bg-[#EEE7DE]/20 dark:bg-[#332B28]/20 rounded-2xl border border-[#E6DED5] dark:border-[#3D3330] flex items-center gap-3">
+                  <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shrink-0 border border-gray-200">
+                    <img
+                      src={imageUrl}
+                      alt="Selected preview"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold text-emerald-600 block">✓ 사진이 성공적으로 불러와졌습니다</span>
+                    <span className="text-[11px] text-[#746D68] dark:text-[#9E958E] line-clamp-1">
+                      {imageUrl.startsWith('data:') ? '모바일/데스크톱 기기 내부 이미지 파일' : imageUrl}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

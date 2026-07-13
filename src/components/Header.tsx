@@ -103,7 +103,7 @@ export const Header: React.FC = () => {
                 홀치의 공방
               </h1>
               <p className="font-mono text-[9px] sm:text-[10px] text-[#C69A52] dark:text-[#DFB775] tracking-widest font-semibold uppercase">
-                HOLCHI’S STUDIO
+                Holechi's Studio
               </p>
             </div>
           </button>

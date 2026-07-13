@@ -41,7 +41,7 @@ export const IntroView: React.FC = () => {
             <span>홀치의 공방이란?</span>
           </h3>
           <p className="text-xs sm:text-sm text-[#746D68] dark:text-[#9E958E] leading-relaxed font-light whitespace-pre-line">
-            <b>‘홀치의 공방’ (HOLCHI’S STUDIO)</b>은 바쁜 현대 사회의 빠른 속도를 잠시 내려놓고, 느리지만 단단하게 일상의 가치를 매만지는 소담하고 따뜻한 블로그 공간입니다.
+            <b>‘홀치의 공방’ (Holechi's Studio)</b>은 바쁜 현대 사회의 빠른 속도를 잠시 내려놓고, 느리지만 단단하게 일상의 가치를 매만지는 소담하고 따뜻한 블로그 공간입니다.
 
             이곳에서 공방지기 홀치는 원목을 가공하여 소박한 수제 도마와 수저를 깎고, 정성 들여 커피 원두를 내려 마십니다. 오랫동안 마주하지 못한 오랜 친구들에게 손수 쓴 잉크의 안부를 전하듯, 편안하고 다정한 이야기들과 좋은 자료들을 아낌없이 모아두고 있습니다.
           </p>
