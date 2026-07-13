@@ -83,7 +83,7 @@ export const IntroView: React.FC = () => {
               <MapPin size={16} className="text-[#C69A52] mt-0.5 shrink-0" />
               <div>
                 <b className="text-gray-900 dark:text-white block">공방 주소지</b>
-                <span>서울특별시 마포구 성산로 12길 34 (연남동 부근 골목 안쪽 하얀 대문집)</span>
+                <span>비공개 (클래스 예약 완료 시 상세 주소 개별 안내)</span>
               </div>
             </div>
 
@@ -91,7 +91,7 @@ export const IntroView: React.FC = () => {
               <Clock size={16} className="text-[#C69A52] mt-0.5 shrink-0" />
               <div>
                 <b className="text-gray-900 dark:text-white block">사랑방 운영일시</b>
-                <span>매주 토/일요일 11:00 ~ 19:00 (원데이 공예 체험 사전 예약제 운영)</span>
+                <span>사전 예약제 운영 (클래스별 시간대 개별 조율)</span>
               </div>
             </div>
 
@@ -99,7 +99,7 @@ export const IntroView: React.FC = () => {
               <ShieldCheck size={16} className="text-[#C69A52] mt-0.5 shrink-0" />
               <div>
                 <b className="text-gray-900 dark:text-white block">교통편 안내</b>
-                <span>지하철 2호선 홍대입구역 3번 출구 도보 12분 / 경의중앙선 가좌역 도보 8분 거리</span>
+                <span>예약 완료 시 찾아오시는 길 상세 안내문 발송</span>
               </div>
             </div>
             
