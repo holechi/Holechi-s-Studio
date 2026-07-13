@@ -4,7 +4,7 @@ import { Search, MapPin, Calendar, Tag, Plus, BookOpen } from 'lucide-react';
 import { WriteModal } from './WriteModal';
 
 export const TravelView: React.FC = () => {
-  const { travels, searchQuery, setSearchQuery, isAdmin } = useBlog();
+  const { travels, searchQuery, setSearchQuery, isAdmin, imageFitMode } = useBlog();
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
@@ -122,7 +122,7 @@ export const TravelView: React.FC = () => {
                   src={travel.imageUrl}
                   alt={travel.title}
                   referrerPolicy="no-referrer"
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-[1.03]"
+                  className={`absolute inset-0 w-full h-full ${imageFitMode === 'contain' ? 'object-contain bg-zinc-100 dark:bg-zinc-800/50' : 'object-cover'} transition-transform duration-700 hover:scale-[1.03]`}
                 />
                 
                 {/* Location overlay badge */}

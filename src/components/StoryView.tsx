@@ -11,6 +11,7 @@ export const StoryView: React.FC = () => {
     likeStory,
     incrementStoryViews,
     isAdmin,
+    imageFitMode,
   } = useBlog();
 
   const [selectedCategory, setSelectedCategory] = useState<'전체' | '일상' | '취미' | '생각' | '소식'>('전체');
@@ -117,7 +118,7 @@ export const StoryView: React.FC = () => {
                     src={story.imageUrl}
                     alt={story.title}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.02]"
+                    className={`w-full h-full ${imageFitMode === 'contain' ? 'object-contain bg-zinc-100 dark:bg-zinc-800/50' : 'object-cover'} transition-transform duration-700 hover:scale-[1.02]`}
                   />
                   <span className="absolute top-4 left-4 bg-[#4B352D] text-white text-[10px] font-bold tracking-wider px-3 py-1 rounded-full uppercase">
                     {story.category}

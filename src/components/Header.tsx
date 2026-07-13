@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useBlog } from '../context/BlogContext';
 import { ActiveTab } from '../types';
-import { Menu, X, Sun, Moon, Search, LogIn, LogOut, Info, Settings, BookOpen } from 'lucide-react';
+import { Menu, X, Sun, Moon, Search, LogIn, LogOut, Info, Settings, BookOpen, Image as ImageIcon } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const {
@@ -13,6 +13,8 @@ export const Header: React.FC = () => {
     setDarkMode,
     isAdmin,
     setIsAdmin,
+    imageFitMode,
+    setImageFitMode,
   } = useBlog();
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -153,6 +155,23 @@ export const Header: React.FC = () => {
                 <Search size={18} />
               </button>
             </div>
+
+            {/* Image Fit Mode toggle */}
+            <button
+              id="image-fit-toggle-btn"
+              onClick={() => setImageFitMode(imageFitMode === 'cover' ? 'contain' : 'cover')}
+              className={`p-2 h-9 rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+                imageFitMode === 'contain'
+                  ? 'text-[#C69A52] bg-[#EEE7DE]/60 dark:bg-[#332B28] font-bold border border-[#C69A52]/20'
+                  : 'text-[#746D68] dark:text-[#9E958E] hover:bg-[#EEE7DE]/50 dark:hover:bg-[#332B28]/50'
+              }`}
+              title={imageFitMode === 'cover' ? '사진 전체보기 (안 짤리게)' : '사진 꽉 채워보기'}
+            >
+              <ImageIcon size={16} />
+              <span className="text-[10px] sm:text-[11px] font-semibold">
+                {imageFitMode === 'contain' ? '전체비율' : '꽉채우기'}
+              </span>
+            </button>
 
             {/* Dark Mode toggle */}
             <button

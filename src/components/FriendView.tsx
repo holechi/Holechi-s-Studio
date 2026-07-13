@@ -10,6 +10,7 @@ export const FriendView: React.FC = () => {
     setSearchQuery,
     likeFriendPost,
     addFriendComment,
+    imageFitMode,
   } = useBlog();
 
   const [showAddModal, setShowAddModal] = useState(false);
@@ -132,8 +133,8 @@ export const FriendView: React.FC = () => {
                 </p>
 
                 {post.imageUrl && (
-                  <div className="max-w-xl rounded-2xl overflow-hidden border border-[#E6DED5]/60">
-                    <img src={post.imageUrl} alt="" referrerPolicy="no-referrer" className="w-full max-h-80 object-cover" />
+                  <div className="max-w-xl rounded-2xl overflow-hidden border border-[#E6DED5]/60 bg-zinc-100 dark:bg-[#1A1614]">
+                    <img src={post.imageUrl} alt="" referrerPolicy="no-referrer" className={`w-full max-h-80 ${imageFitMode === 'contain' ? 'object-contain' : 'object-cover'}`} />
                   </div>
                 )}
               </div>

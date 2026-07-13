@@ -5,7 +5,7 @@ import { PhotoViewer } from './PhotoViewer';
 import { WriteModal } from './WriteModal';
 
 export const PhotoView: React.FC = () => {
-  const { photos, searchQuery, setSearchQuery, isAdmin } = useBlog();
+  const { photos, searchQuery, setSearchQuery, isAdmin, imageFitMode } = useBlog();
   const [viewerOpen, setViewerOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -82,7 +82,7 @@ export const PhotoView: React.FC = () => {
                   src={photo.imageUrl}
                   alt={photo.title}
                   referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className={`w-full h-full ${imageFitMode === 'contain' ? 'object-contain bg-[#FAF8F4] dark:bg-[#1A1614]' : 'object-cover'} transition-transform duration-700 group-hover:scale-105`}
                 />
                 
                 {/* Floating Date Over Image */}

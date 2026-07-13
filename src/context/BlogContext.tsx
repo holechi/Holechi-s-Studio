@@ -41,6 +41,10 @@ interface BlogContextType {
   showVisitorCount: boolean;
   setShowVisitorCount: (show: boolean) => void;
 
+  // Image Fit Mode
+  imageFitMode: 'cover' | 'contain';
+  setImageFitMode: (mode: 'cover' | 'contain') => void;
+
   // Actions - Stories
   addStory: (story: Omit<Story, 'id' | 'views' | 'likes' | 'createdAt'>) => void;
   updateStory: (id: string, updated: Partial<Story>) => void;
@@ -104,6 +108,13 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [totalVisitors, setTotalVisitors] = useState(1284);
   const [showVisitorCount, setShowVisitorCount] = useState(true);
 
+  // Image Fit Mode
+  const [imageFitMode, setImageFitModeState] = useState<'cover' | 'contain'>('cover');
+  const setImageFitMode = (mode: 'cover' | 'contain') => {
+    setImageFitModeState(mode);
+    localStorage.setItem('imageFitMode', mode);
+  };
+
   // Load from LocalStorage
   useEffect(() => {
     // Theme
@@ -119,6 +130,12 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Admin Session
     const adminSession = sessionStorage.getItem('isAdmin') === 'true';
     setIsAdmin(adminSession);
+
+    // Image Fit Mode Setup
+    const storedFitMode = localStorage.getItem('imageFitMode') as 'cover' | 'contain' | null;
+    if (storedFitMode) {
+      setImageFitModeState(storedFitMode);
+    }
 
     // Core Data Loading
     const loadData = <T,>(key: string, initial: T[]): T[] => {
@@ -456,6 +473,8 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
         totalVisitors,
         showVisitorCount,
         setShowVisitorCount: handleSetShowVisitorCount,
+        imageFitMode,
+        setImageFitMode,
         addStory,
         updateStory,
         deleteStory,

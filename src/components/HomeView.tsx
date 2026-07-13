@@ -34,6 +34,7 @@ export const HomeView: React.FC = () => {
     incrementStoryViews,
     likeStory,
     downloadLibraryItem,
+    imageFitMode,
   } = useBlog();
 
   // Photo viewer states
@@ -174,7 +175,7 @@ export const HomeView: React.FC = () => {
                   src={stories[0].imageUrl}
                   alt={stories[0].title}
                   referrerPolicy="no-referrer"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className={`absolute inset-0 w-full h-full ${imageFitMode === 'contain' ? 'object-contain bg-zinc-100 dark:bg-zinc-800/50' : 'object-cover'}`}
                 />
                 <span className="absolute top-4 left-4 bg-[#C69A52] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md uppercase">
                   🏆 최신 이야기
@@ -226,7 +227,7 @@ export const HomeView: React.FC = () => {
                     src={story.imageUrl}
                     alt={story.title}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                    className={`w-full h-full ${imageFitMode === 'contain' ? 'object-contain bg-zinc-100 dark:bg-zinc-800/50' : 'object-cover'} transition-transform duration-500 hover:scale-105`}
                   />
                   <span className="absolute top-3 left-3 bg-[#4B352D]/80 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
                     {story.category}
@@ -301,7 +302,7 @@ export const HomeView: React.FC = () => {
                   src={photo.imageUrl}
                   alt={photo.title}
                   referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className={`w-full h-full ${imageFitMode === 'contain' ? 'object-contain bg-[#FAF8F4] dark:bg-[#1A1614]' : 'object-cover'} transition-transform duration-500 group-hover:scale-105`}
                 />
                 
                 {/* Overlay on Hover */}
@@ -401,7 +402,7 @@ export const HomeView: React.FC = () => {
                       src={post.imageUrl}
                       alt=""
                       referrerPolicy="no-referrer"
-                      className="w-full h-36 object-cover rounded-xl border border-[#E6DED5]/80"
+                      className={`w-full h-36 ${imageFitMode === 'contain' ? 'object-contain bg-zinc-100 dark:bg-zinc-800/50' : 'object-cover'} rounded-xl border border-[#E6DED5]/80`}
                     />
                   )}
                 </div>
@@ -466,7 +467,7 @@ export const HomeView: React.FC = () => {
                     src={travel.imageUrl}
                     alt={travel.title}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover"
+                    className={`w-full h-full ${imageFitMode === 'contain' ? 'object-contain bg-zinc-100 dark:bg-zinc-800/50' : 'object-cover'}`}
                   />
                   {/* Badge */}
                   <span className="absolute top-4 left-4 bg-[#C69A52] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md uppercase tracking-wider">
