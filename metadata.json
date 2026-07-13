@@ -1,0 +1,6 @@
+{
+  "name": "홀치의 공방",
+  "description": "친구들과 추억을 나누고, 소소한 일상을 기록하며, 좋은 자료를 함께 나누는 따뜻한 분위기의 개인 블로그형 홈페이지",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

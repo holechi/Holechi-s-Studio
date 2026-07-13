@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans KR", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Noto Sans KR", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --color-warm-bg: #FAF8F4;
+  --color-warm-card: #FFFFFF;
+  --color-warm-text: #25211F;
+  --color-warm-muted: #746D68;
+  --color-warm-brown: #4B352D;
+  --color-warm-gold: #C69A52;
+  --color-warm-beige: #EEE7DE;
+  --color-warm-border: #E6DED5;
+  --color-warm-danger: #B74A45;
+  --color-warm-success: #3F7D5A;
+
+  --color-dark-bg: #1A1614;
+  --color-dark-card: #25201E;
+  --color-dark-text: #EBE6E1;
+  --color-dark-muted: #9E958E;
+  --color-dark-brown: #F1ECE6;
+  --color-dark-gold: #DFB775;
+  --color-dark-beige: #332B28;
+  --color-dark-border: #3D3330;
+  --color-dark-danger: #D6605B;
+  --color-dark-success: #52A075;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-warm-bg);
+    color: var(--color-warm-text);
+    font-family: var(--font-sans);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .dark body {
+    background-color: var(--color-dark-bg);
+    color: var(--color-dark-text);
+  }
+
+  /* Custom scrollbar to look like Apple/Mac modern styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(75, 53, 45, 0.1);
+    border-radius: 999px;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(235, 230, 225, 0.1);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(75, 53, 45, 0.3);
+  }
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(235, 230, 225, 0.3);
+  }
+}
+
+/* Custom transitions and glassmorphism helpers */
+.glass-header {
+  background-color: rgba(250, 248, 244, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .glass-header {
+  background-color: rgba(26, 22, 20, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Apple/Material visual ripple & cards */
+.card-hover {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px -10px rgba(75, 53, 45, 0.12);
+}
+
+.dark .card-hover:hover {
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
+}
