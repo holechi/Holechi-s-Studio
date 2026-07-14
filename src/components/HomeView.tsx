@@ -35,6 +35,7 @@ export const HomeView: React.FC = () => {
     likeStory,
     downloadLibraryItem,
     imageFitMode,
+    isAdmin,
   } = useBlog();
 
   // Photo viewer states
@@ -84,12 +85,20 @@ export const HomeView: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Sorted notices: important ones first
-  const sortedNotices = [...notices].sort((a, b) => {
+  // Filter and sort lists based on approved status
+  const filteredNotices = notices.filter((notice) => isAdmin || notice.approved !== false);
+  const sortedNotices = [...filteredNotices].sort((a, b) => {
     if (a.isImportant && !b.isImportant) return -1;
     if (!a.isImportant && b.isImportant) return 1;
     return 0;
   });
+
+  const filteredStories = stories.filter((story) => isAdmin || story.approved !== false);
+  const filteredPhotos = photos.filter((photo) => isAdmin || photo.approved !== false);
+  const filteredFriendPosts = friendPosts.filter((post) => isAdmin || post.approved !== false);
+  const filteredTravels = travels.filter((travel) => isAdmin || travel.approved !== false);
+  const filteredLibraryItems = libraryItems.filter((item) => isAdmin || item.approved !== false);
+  const filteredGuestbooks = guestbooks.filter((g) => isAdmin || g.approved !== false);
 
   return (
     <div id="home-view" className="space-y-16 py-10">
@@ -164,7 +173,7 @@ export const HomeView: React.FC = () => {
           </button>
         </div>
 
-        {stories.length === 0 ? (
+        {filteredStories.length === 0 ? (
           <p className="text-center py-10 text-xs text-[#746D68]">게시된 이야기가 없습니다.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -172,8 +181,8 @@ export const HomeView: React.FC = () => {
             <div className="md:col-span-2 lg:col-span-3 bg-white dark:bg-[#25201E] border border-[#E6DED5] dark:border-[#3D3330] rounded-3xl overflow-hidden shadow-xs flex flex-col lg:flex-row items-stretch card-hover">
               <div className="lg:w-1/2 relative min-h-[220px] lg:min-h-auto">
                 <img
-                  src={stories[0].imageUrl}
-                  alt={stories[0].title}
+                  src={filteredStories[0].imageUrl}
+                  alt={filteredStories[0].title}
                   referrerPolicy="no-referrer"
                   className={`absolute inset-0 w-full h-full ${imageFitMode === 'contain' ? 'object-contain bg-zinc-100 dark:bg-zinc-800/50' : 'object-cover'}`}
                 />
@@ -183,31 +192,31 @@ export const HomeView: React.FC = () => {
               </div>
               <div className="lg:w-1/2 p-6 sm:p-8 flex flex-col justify-between items-start gap-4">
                 <div className="space-y-2">
-                  <span className="text-xs font-bold text-[#C69A52]">{stories[0].category}</span>
+                  <span className="text-xs font-bold text-[#C69A52]">{filteredStories[0].category}</span>
                   <h4 className="font-display font-bold text-xl sm:text-2xl text-[#4B352D] dark:text-white leading-tight">
-                    {stories[0].title}
+                    {filteredStories[0].title}
                   </h4>
                   <p className="text-xs sm:text-sm text-[#746D68] dark:text-[#9E958E] leading-relaxed line-clamp-3 font-light">
-                    {stories[0].content}
+                    {filteredStories[0].content}
                   </p>
                 </div>
                 
                 <div className="w-full flex items-center justify-between border-t border-[#E6DED5]/80 dark:border-[#3D3330]/80 pt-4">
                   <div className="flex items-center gap-3 text-[11px] text-[#746D68] dark:text-[#9E958E] font-mono">
-                    <span>📅 {stories[0].createdAt}</span>
-                    <span>👀 {stories[0].views}</span>
+                    <span>📅 {filteredStories[0].createdAt}</span>
+                    <span>👀 {filteredStories[0].views}</span>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        likeStory(stories[0].id);
+                        likeStory(filteredStories[0].id);
                       }}
                       className="hover:text-red-500 flex items-center gap-0.5 cursor-pointer"
                     >
-                      ❤️ {stories[0].likes}
+                      ❤️ {filteredStories[0].likes}
                     </button>
                   </div>
                   <button
-                    onClick={() => handleStoryClick(stories[0].id)}
+                    onClick={() => handleStoryClick(filteredStories[0].id)}
                     className="h-9 px-4 rounded-lg bg-[#4B352D] hover:bg-[#3d2b24] text-white text-xs font-bold transition-all cursor-pointer"
                   >
                     자세히 읽기
@@ -217,7 +226,7 @@ export const HomeView: React.FC = () => {
             </div>
 
             {/* Remaining Stories */}
-            {stories.slice(1, 6).map((story) => (
+            {filteredStories.slice(1, 6).map((story) => (
               <div
                 key={story.id}
                 className="bg-white dark:bg-[#25201E] border border-[#E6DED5] dark:border-[#3D3330] rounded-2xl overflow-hidden flex flex-col justify-between card-hover"
@@ -288,11 +297,11 @@ export const HomeView: React.FC = () => {
           </button>
         </div>
 
-        {photos.length === 0 ? (
+        {filteredPhotos.length === 0 ? (
           <p className="text-center py-10 text-xs text-[#746D68]">등록된 앨범 사진이 없습니다.</p>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {photos.slice(0, 8).map((photo) => (
+            {filteredPhotos.slice(0, 8).map((photo) => (
               <div
                 key={photo.id}
                 onClick={() => handlePhotoClick(photo)}
@@ -355,7 +364,7 @@ export const HomeView: React.FC = () => {
           </div>
         </div>
 
-        {friendPosts.length === 0 ? (
+        {filteredFriendPosts.length === 0 ? (
           <div className="bg-white dark:bg-[#25201E] border border-dashed border-[#E6DED5] dark:border-[#3D3330] rounded-3xl p-12 text-center">
             <p className="text-sm text-[#746D68] dark:text-[#9E958E]">
               아직 등록된 친구 소식이 없습니다. 첫 번째 정겨운 소식을 남겨보세요.
@@ -369,7 +378,7 @@ export const HomeView: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {friendPosts.slice(0, 4).map((post) => (
+            {filteredFriendPosts.slice(0, 4).map((post) => (
               <div
                 key={post.id}
                 className="bg-white dark:bg-[#25201E] border border-[#E6DED5] dark:border-[#3D3330] rounded-2xl p-5 flex flex-col justify-between gap-4 card-hover"
@@ -453,11 +462,11 @@ export const HomeView: React.FC = () => {
           </button>
         </div>
 
-        {travels.length === 0 ? (
+        {filteredTravels.length === 0 ? (
           <p className="text-center py-10 text-xs text-[#746D68]">게시된 여행기가 없습니다.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {travels.slice(0, 3).map((travel) => (
+            {filteredTravels.slice(0, 3).map((travel) => (
               <div
                 key={travel.id}
                 className="bg-white dark:bg-[#25201E] border border-[#E6DED5] dark:border-[#3D3330] rounded-2xl overflow-hidden flex flex-col justify-between card-hover"
@@ -530,11 +539,11 @@ export const HomeView: React.FC = () => {
           </button>
         </div>
 
-        {libraryItems.length === 0 ? (
+        {filteredLibraryItems.length === 0 ? (
           <p className="text-center py-10 text-xs text-[#746D68]">공유된 자료가 없습니다.</p>
         ) : (
           <div className="bg-white dark:bg-[#25201E] border border-[#E6DED5] dark:border-[#3D3330] rounded-3xl divide-y divide-[#E6DED5] dark:divide-[#3D3330]">
-            {libraryItems.slice(0, 5).map((item) => (
+            {filteredLibraryItems.slice(0, 5).map((item) => (
               <div
                 key={item.id}
                 className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors hover:bg-[#FAF8F4]/40 dark:hover:bg-[#1A1614]/10"
@@ -658,11 +667,11 @@ export const HomeView: React.FC = () => {
           </div>
         </div>
 
-        {guestbooks.length === 0 ? (
+        {filteredGuestbooks.length === 0 ? (
           <p className="text-center py-6 text-xs text-[#746D68]">작성된 방명록이 없습니다.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {guestbooks.slice(0, 3).map((g) => (
+            {filteredGuestbooks.slice(0, 3).map((g) => (
               <div
                 key={g.id}
                 className="bg-white dark:bg-[#25201E] border border-[#E6DED5] dark:border-[#3D3330] rounded-2xl p-5 flex flex-col justify-between gap-4 card-hover"

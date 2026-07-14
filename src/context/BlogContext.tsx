@@ -34,6 +34,8 @@ interface BlogContextType {
   // Admin Mode
   isAdmin: boolean;
   setIsAdmin: (admin: boolean) => void;
+  adminPassword: string;
+  changeAdminPassword: (password: string) => void;
   
   // Visitor Counts
   todayVisitors: number;
@@ -51,38 +53,45 @@ interface BlogContextType {
   deleteStory: (id: string) => void;
   incrementStoryViews: (id: string) => void;
   likeStory: (id: string) => void;
+  approveStory: (id: string) => void;
 
   // Actions - Photos
   addPhoto: (photo: Omit<Photo, 'id' | 'createdAt'>) => void;
   updatePhoto: (id: string, updated: Partial<Photo>) => void;
   deletePhoto: (id: string) => void;
+  approvePhoto: (id: string) => void;
 
   // Actions - Travels
   addTravel: (travel: Omit<Travel, 'id'>) => void;
   updateTravel: (id: string, updated: Partial<Travel>) => void;
   deleteTravel: (id: string) => void;
+  approveTravel: (id: string) => void;
 
   // Actions - Friend Posts
   addFriendPost: (post: { nickname: string; title: string; content: string; imageUrl?: string }) => void;
   deleteFriendPost: (id: string) => void;
   likeFriendPost: (id: string) => void;
   addFriendComment: (postId: string, nickname: string, content: string) => void;
+  approveFriendPost: (id: string) => void;
 
   // Actions - Library
   addLibraryItem: (item: Omit<LibraryItem, 'id' | 'createdAt' | 'downloads'>) => void;
   updateLibraryItem: (id: string, updated: Partial<LibraryItem>) => void;
   deleteLibraryItem: (id: string) => void;
   downloadLibraryItem: (id: string) => void;
+  approveLibraryItem: (id: string) => void;
 
   // Actions - Notices
   addNotice: (notice: Omit<Notice, 'id' | 'createdAt'>) => void;
   updateNotice: (id: string, updated: Partial<Notice>) => void;
   deleteNotice: (id: string) => void;
+  approveNotice: (id: string) => void;
 
   // Actions - Guestbooks
   addGuestbook: (nickname: string, content: string) => void;
   deleteGuestbook: (id: string) => void;
   replyGuestbook: (id: string, reply: string) => void;
+  approveGuestbook: (id: string) => void;
 }
 
 const BlogContext = createContext<BlogContextType | undefined>(undefined);
@@ -93,6 +102,12 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [searchQuery, setSearchQuery] = useState('');
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [adminPassword, setAdminPasswordState] = useState<string>('1234');
+
+  const changeAdminPassword = (newPassword: string) => {
+    setAdminPasswordState(newPassword);
+    localStorage.setItem('adminPassword', newPassword);
+  };
   
   // Core State
   const [stories, setStories] = useState<Story[]>([]);
@@ -109,7 +124,7 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [showVisitorCount, setShowVisitorCount] = useState(true);
 
   // Image Fit Mode
-  const [imageFitMode, setImageFitModeState] = useState<'cover' | 'contain'>('cover');
+  const [imageFitMode, setImageFitModeState] = useState<'cover' | 'contain'>('contain');
   const setImageFitMode = (mode: 'cover' | 'contain') => {
     setImageFitModeState(mode);
     localStorage.setItem('imageFitMode', mode);
@@ -130,6 +145,12 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Admin Session
     const adminSession = sessionStorage.getItem('isAdmin') === 'true';
     setIsAdmin(adminSession);
+
+    // Admin Password Setup
+    const storedPassword = localStorage.getItem('adminPassword');
+    if (storedPassword) {
+      setAdminPasswordState(storedPassword);
+    }
 
     // Image Fit Mode Setup
     const storedFitMode = localStorage.getItem('imageFitMode') as 'cover' | 'contain' | null;
@@ -232,6 +253,7 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
       createdAt: today,
       views: 0,
       likes: 0,
+      approved: isAdmin ? true : false,
     };
     const updated = [newStory, ...stories];
     setStories(updated);
@@ -262,6 +284,12 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
     saveState('stories', updatedList);
   };
 
+  const approveStory = (id: string) => {
+    const updatedList = stories.map((s) => (s.id === id ? { ...s, approved: true } : s));
+    setStories(updatedList);
+    saveState('stories', updatedList);
+  };
+
   // Actions - Photos
   const addPhoto = (photo: Omit<Photo, 'id' | 'createdAt'>) => {
     const today = new Date().toISOString().split('T')[0];
@@ -269,6 +297,7 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ...photo,
       id: `photo-${Date.now()}`,
       createdAt: today,
+      approved: isAdmin ? true : false,
     };
     const updated = [newPhoto, ...photos];
     setPhotos(updated);
@@ -287,11 +316,18 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
     saveState('photos', filtered);
   };
 
+  const approvePhoto = (id: string) => {
+    const updatedList = photos.map((p) => (p.id === id ? { ...p, approved: true } : p));
+    setPhotos(updatedList);
+    saveState('photos', updatedList);
+  };
+
   // Actions - Travels
   const addTravel = (travel: Omit<Travel, 'id'>) => {
     const newTravel: Travel = {
       ...travel,
       id: `travel-${Date.now()}`,
+      approved: isAdmin ? true : false,
     };
     const updated = [newTravel, ...travels];
     setTravels(updated);
@@ -310,6 +346,12 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
     saveState('travels', filtered);
   };
 
+  const approveTravel = (id: string) => {
+    const updatedList = travels.map((t) => (t.id === id ? { ...t, approved: true } : t));
+    setTravels(updatedList);
+    saveState('travels', updatedList);
+  };
+
   // Actions - Friend Posts
   const addFriendPost = (post: { nickname: string; title: string; content: string; imageUrl?: string }) => {
     const now = new Date();
@@ -323,6 +365,7 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
       createdAt: formattedDate,
       likes: 0,
       comments: [],
+      approved: isAdmin ? true : false,
     };
     const updated = [newPost, ...friendPosts];
     setFriendPosts(updated);
@@ -363,6 +406,12 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
     saveState('friendPosts', updatedList);
   };
 
+  const approveFriendPost = (id: string) => {
+    const updatedList = friendPosts.map((p) => (p.id === id ? { ...p, approved: true } : p));
+    setFriendPosts(updatedList);
+    saveState('friendPosts', updatedList);
+  };
+
   // Actions - Library
   const addLibraryItem = (item: Omit<LibraryItem, 'id' | 'createdAt' | 'downloads'>) => {
     const today = new Date().toISOString().split('T')[0];
@@ -371,6 +420,7 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: `lib-${Date.now()}`,
       createdAt: today,
       downloads: 0,
+      approved: isAdmin ? true : false,
     };
     const updated = [newItem, ...libraryItems];
     setLibraryItems(updated);
@@ -395,6 +445,12 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
     saveState('libraryItems', updatedList);
   };
 
+  const approveLibraryItem = (id: string) => {
+    const updatedList = libraryItems.map((l) => (l.id === id ? { ...l, approved: true } : l));
+    setLibraryItems(updatedList);
+    saveState('libraryItems', updatedList);
+  };
+
   // Actions - Notices
   const addNotice = (notice: Omit<Notice, 'id' | 'createdAt'>) => {
     const today = new Date().toISOString().split('T')[0];
@@ -402,6 +458,7 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ...notice,
       id: `notice-${Date.now()}`,
       createdAt: today,
+      approved: isAdmin ? true : false,
     };
     const updated = [newNotice, ...notices];
     setNotices(updated);
@@ -424,6 +481,12 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
     saveState('notices', list);
   };
 
+  const approveNotice = (id: string) => {
+    const updatedList = notices.map((n) => (n.id === id ? { ...n, approved: true } : n));
+    setNotices(updatedList);
+    saveState('notices', updatedList);
+  };
+
   // Actions - Guestbooks
   const addGuestbook = (nickname: string, content: string) => {
     const now = new Date();
@@ -433,6 +496,7 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
       nickname,
       content,
       createdAt: formattedDate,
+      approved: isAdmin ? true : false,
     };
     const updated = [newGuest, ...guestbooks];
     setGuestbooks(updated);
@@ -447,6 +511,12 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const replyGuestbook = (id: string, reply: string) => {
     const updatedList = guestbooks.map((g) => (g.id === id ? { ...g, adminReply: reply || undefined } : g));
+    setGuestbooks(updatedList);
+    saveState('guestbooks', updatedList);
+  };
+
+  const approveGuestbook = (id: string) => {
+    const updatedList = guestbooks.map((g) => (g.id === id ? { ...g, approved: true } : g));
     setGuestbooks(updatedList);
     saveState('guestbooks', updatedList);
   };
@@ -469,6 +539,8 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setDarkMode: handleSetDarkMode,
         isAdmin,
         setIsAdmin: handleSetIsAdmin,
+        adminPassword,
+        changeAdminPassword,
         todayVisitors,
         totalVisitors,
         showVisitorCount,
@@ -480,26 +552,33 @@ export const BlogProvider: React.FC<{ children: React.ReactNode }> = ({ children
         deleteStory,
         incrementStoryViews,
         likeStory,
+        approveStory,
         addPhoto,
         updatePhoto,
         deletePhoto,
+        approvePhoto,
         addTravel,
         updateTravel,
         deleteTravel,
+        approveTravel,
         addFriendPost,
         deleteFriendPost,
         likeFriendPost,
         addFriendComment,
+        approveFriendPost,
         addLibraryItem,
         updateLibraryItem,
         deleteLibraryItem,
         downloadLibraryItem,
+        approveLibraryItem,
         addNotice,
         updateNotice,
         deleteNotice,
+        approveNotice,
         addGuestbook,
         deleteGuestbook,
         replyGuestbook,
+        approveGuestbook,
       }}
     >
       {children}

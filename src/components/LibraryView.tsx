@@ -10,6 +10,7 @@ export const LibraryView: React.FC = () => {
 
   // File type filter helper
   const filteredItems = libraryItems.filter((item) => {
+    if (item.approved === false && !isAdmin) return false;
     const matchesType = selectedType === 'all' || item.fileType === selectedType;
     const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesType && matchesSearch;
@@ -132,6 +133,12 @@ export const LibraryView: React.FC = () => {
                     <span>파일 크기: {item.fileSize}</span>
                     <span>•</span>
                     <span>게시 날짜: {item.createdAt}</span>
+                    {item.approved === false && (
+                      <>
+                        <span>•</span>
+                        <span className="px-1.5 py-0.2 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold rounded">승인 대기</span>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

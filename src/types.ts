@@ -7,6 +7,7 @@ export interface Story {
   createdAt: string;
   views: number;
   likes: number;
+  approved?: boolean;
 }
 
 export interface Photo {
@@ -16,6 +17,7 @@ export interface Photo {
   imageUrl: string;
   takenAt: string;
   createdAt: string;
+  approved?: boolean;
 }
 
 export interface Travel {
@@ -26,6 +28,7 @@ export interface Travel {
   imageUrl: string;
   date: string;
   tags: string[];
+  approved?: boolean;
 }
 
 export interface FriendComment {
@@ -45,6 +48,7 @@ export interface FriendPost {
   createdAt: string;
   likes: number;
   comments: FriendComment[];
+  approved?: boolean;
 }
 
 export interface LibraryItem {
@@ -54,6 +58,7 @@ export interface LibraryItem {
   fileSize: string;
   createdAt: string;
   downloads: number;
+  approved?: boolean;
 }
 
 export interface Notice {
@@ -62,6 +67,7 @@ export interface Notice {
   content: string;
   createdAt: string;
   isImportant: boolean;
+  approved?: boolean;
 }
 
 export interface Guestbook {
@@ -70,6 +76,7 @@ export interface Guestbook {
   content: string;
   createdAt: string;
   adminReply?: string;
+  approved?: boolean;
 }
 
 export type ActiveTab = 'home' | 'story' | 'photo' | 'travel' | 'friend' | 'library' | 'guestbook' | 'intro' | 'admin';

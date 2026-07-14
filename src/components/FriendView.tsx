@@ -11,6 +11,7 @@ export const FriendView: React.FC = () => {
     likeFriendPost,
     addFriendComment,
     imageFitMode,
+    isAdmin,
   } = useBlog();
 
   const [showAddModal, setShowAddModal] = useState(false);
@@ -22,11 +23,14 @@ export const FriendView: React.FC = () => {
   const [commentError, setCommentError] = useState('');
 
   // Filter friend posts
-  const filteredPosts = friendPosts.filter((post) =>
-    post.nickname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    post.content.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredPosts = friendPosts.filter((post) => {
+    if (post.approved === false && !isAdmin) return false;
+    return (
+      post.nickname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.content.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
 
   const handleCommentSubmit = (e: React.FormEvent, postId: string) => {
     e.preventDefault();
@@ -118,9 +122,16 @@ export const FriendView: React.FC = () => {
                     <span className="text-[10px] text-[#746D68] dark:text-[#9E958E] font-mono">📅 {post.createdAt}</span>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold bg-[#C69A52]/10 text-[#C69A52] dark:text-[#DFB775] px-2.5 py-0.5 rounded">
-                  손님글
-                </span>
+                <div className="flex items-center gap-1.5">
+                  {post.approved === false && (
+                    <span className="text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-0.5 rounded">
+                      승인 대기
+                    </span>
+                  )}
+                  <span className="text-[10px] font-bold bg-[#C69A52]/10 text-[#C69A52] dark:text-[#DFB775] px-2.5 py-0.5 rounded">
+                    손님글
+                  </span>
+                </div>
               </div>
 
               {/* Main Content */}

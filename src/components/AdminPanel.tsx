@@ -24,7 +24,18 @@ export const AdminPanel: React.FC = () => {
     setShowVisitorCount,
     todayVisitors,
     totalVisitors,
+    adminPassword,
+    changeAdminPassword,
+    approveStory,
+    approvePhoto,
+    approveTravel,
+    approveFriendPost,
+    approveLibraryItem,
+    approveNotice,
+    approveGuestbook,
   } = useBlog();
+
+  const [newPass, setNewPass] = useState('');
 
   const [activeSubTab, setActiveSubTab] = useState<'stories' | 'photos' | 'travels' | 'friend' | 'library' | 'notices' | 'guestbooks'>('stories');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -39,6 +50,17 @@ export const AdminPanel: React.FC = () => {
       action();
       alert('삭제되었습니다.');
     }
+  };
+
+  const handlePasswordChange = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPass.trim()) {
+      alert('비밀번호를 입력해주세요.');
+      return;
+    }
+    changeAdminPassword(newPass);
+    setNewPass('');
+    alert('어드민 비밀번호가 성공적으로 변경되었습니다!');
   };
 
   const handleReplySubmit = (e: React.FormEvent, id: string) => {
@@ -78,25 +100,56 @@ export const AdminPanel: React.FC = () => {
           </p>
         </div>
 
-        {/* Global Settings Trigger card */}
-        <div className="flex items-center gap-3 p-3 bg-white dark:bg-[#25201E] border border-[#E6DED5] dark:border-[#3D3330] rounded-2xl shadow-xs">
-          <div className="w-9 h-9 rounded-xl bg-[#C69A52]/10 dark:bg-[#DFB775]/10 flex items-center justify-center text-[#C69A52]">
-            <Settings size={18} />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-[#4B352D] dark:text-[#DFB775]">방문자 통계 노출</span>
-              <input
-                id="visitor-count-visibility"
-                type="checkbox"
-                checked={showVisitorCount}
-                onChange={(e) => setShowVisitorCount(e.target.checked)}
-                className="w-4 h-4 text-[#C69A52] focus:ring-[#C69A52] border-[#E6DED5] rounded"
-              />
+        {/* Global Settings Controls */}
+        <div id="admin-global-settings-controls" className="flex flex-col sm:flex-row gap-3">
+          {/* Global Settings Trigger card */}
+          <div className="flex items-center gap-3 p-3 bg-white dark:bg-[#25201E] border border-[#E6DED5] dark:border-[#3D3330] rounded-2xl shadow-xs">
+            <div className="w-9 h-9 rounded-xl bg-[#C69A52]/10 dark:bg-[#DFB775]/10 flex items-center justify-center text-[#C69A52]">
+              <Settings size={18} />
             </div>
-            <p className="text-[10px] text-[#746D68] dark:text-[#9E958E]">
-              오늘 {todayVisitors} / 전체 {totalVisitors}명
-            </p>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-[#4B352D] dark:text-[#DFB775]">방문자 통계 노출</span>
+                <input
+                  id="visitor-count-visibility"
+                  type="checkbox"
+                  checked={showVisitorCount}
+                  onChange={(e) => setShowVisitorCount(e.target.checked)}
+                  className="w-4 h-4 text-[#C69A52] focus:ring-[#C69A52] border-[#E6DED5] rounded"
+                />
+              </div>
+              <p className="text-[10px] text-[#746D68] dark:text-[#9E958E]">
+                오늘 {todayVisitors} / 전체 {totalVisitors}명
+              </p>
+            </div>
+          </div>
+
+          {/* Admin Password Change Card */}
+          <div className="flex items-center gap-3 p-3 bg-white dark:bg-[#25201E] border border-[#E6DED5] dark:border-[#3D3330] rounded-2xl shadow-xs">
+            <div className="w-9 h-9 rounded-xl bg-[#C69A52]/10 dark:bg-[#DFB775]/10 flex items-center justify-center text-[#C69A52]">
+              <span className="text-sm">🔑</span>
+            </div>
+            <form onSubmit={handlePasswordChange} className="flex flex-col gap-1.5">
+              <span className="text-xs font-semibold text-[#4B352D] dark:text-[#DFB775]">관리자 비밀번호 변경</span>
+              <div className="flex gap-1.5">
+                <input
+                  id="new-admin-password-input"
+                  type="password"
+                  placeholder="새 비밀번호 입력"
+                  value={newPass}
+                  onChange={(e) => setNewPass(e.target.value)}
+                  className="w-28 sm:w-32 h-7 px-2 border border-[#E6DED5] dark:border-[#3D3330] bg-white dark:bg-[#1A1614] rounded-lg text-xs text-[#25211F] dark:text-white focus:outline-none"
+                  required
+                />
+                <button
+                  id="change-password-submit-btn"
+                  type="submit"
+                  className="px-2.5 h-7 rounded-lg bg-[#4B352D] dark:bg-[#DFB775] text-white dark:text-[#25201E] text-[10px] font-bold hover:opacity-90 cursor-pointer shrink-0"
+                >
+                  변경
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -193,7 +246,12 @@ export const AdminPanel: React.FC = () => {
                       </span>
                     </td>
                     <td className="p-4 font-bold text-[#4B352D] dark:text-white truncate max-w-[280px]">
-                      {story.title}
+                      <div className="flex items-center gap-2">
+                        {story.title}
+                        {story.approved === false && (
+                          <span className="px-1.5 py-0.5 text-[9px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded">승인 대기</span>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4 text-xs text-[#746D68] dark:text-[#9E958E] font-mono">
                       {story.createdAt}
@@ -202,13 +260,27 @@ export const AdminPanel: React.FC = () => {
                       👀 {story.views} / ❤️ {story.likes}
                     </td>
                     <td className="p-4 text-right">
-                      <button
-                        onClick={() => handleDelete(story.id, '이야기', () => deleteStory(story.id))}
-                        className="p-2 rounded-lg text-[#B74A45] hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
-                        title="삭제"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        {story.approved === false && (
+                          <button
+                            onClick={() => {
+                              approveStory(story.id);
+                              alert('이야기가 성공적으로 승인되었습니다.');
+                            }}
+                            className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 cursor-pointer"
+                            title="승인하기"
+                          >
+                            <CheckCircle size={15} />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(story.id, '이야기', () => deleteStory(story.id))}
+                          className="p-2 rounded-lg text-[#B74A45] hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
+                          title="삭제"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -242,7 +314,12 @@ export const AdminPanel: React.FC = () => {
                       />
                     </td>
                     <td className="p-4 font-bold text-[#4B352D] dark:text-white truncate max-w-[150px]">
-                      {photo.title}
+                      <div className="flex items-center gap-2">
+                        {photo.title}
+                        {photo.approved === false && (
+                          <span className="px-1.5 py-0.5 text-[9px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded">승인 대기</span>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4 text-xs text-[#746D68] dark:text-[#9E958E] max-w-[200px] truncate">
                       {photo.description}
@@ -251,13 +328,27 @@ export const AdminPanel: React.FC = () => {
                       {photo.takenAt}
                     </td>
                     <td className="p-4 text-right">
-                      <button
-                        onClick={() => handleDelete(photo.id, '사진', () => deletePhoto(photo.id))}
-                        className="p-2 rounded-lg text-[#B74A45] hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
-                        title="삭제"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        {photo.approved === false && (
+                          <button
+                            onClick={() => {
+                              approvePhoto(photo.id);
+                              alert('사진이 성공적으로 승인되었습니다.');
+                            }}
+                            className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 cursor-pointer"
+                            title="승인하기"
+                          >
+                            <CheckCircle size={15} />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(photo.id, '사진', () => deletePhoto(photo.id))}
+                          className="p-2 rounded-lg text-[#B74A45] hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
+                          title="삭제"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -288,7 +379,12 @@ export const AdminPanel: React.FC = () => {
                       </span>
                     </td>
                     <td className="p-4 font-bold text-[#4B352D] dark:text-white truncate max-w-[220px]">
-                      {travel.title}
+                      <div className="flex items-center gap-2">
+                        {travel.title}
+                        {travel.approved === false && (
+                          <span className="px-1.5 py-0.5 text-[9px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded">승인 대기</span>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4 text-xs text-[#746D68] dark:text-[#9E958E] font-mono">
                       {travel.date}
@@ -303,13 +399,27 @@ export const AdminPanel: React.FC = () => {
                       </div>
                     </td>
                     <td className="p-4 text-right">
-                      <button
-                        onClick={() => handleDelete(travel.id, '여행기', () => deleteTravel(travel.id))}
-                        className="p-2 rounded-lg text-[#B74A45] hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
-                        title="삭제"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        {travel.approved === false && (
+                          <button
+                            onClick={() => {
+                              approveTravel(travel.id);
+                              alert('여행기가 성공적으로 승인되었습니다.');
+                            }}
+                            className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 cursor-pointer"
+                            title="승인하기"
+                          >
+                            <CheckCircle size={15} />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(travel.id, '여행기', () => deleteTravel(travel.id))}
+                          className="p-2 rounded-lg text-[#B74A45] hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
+                          title="삭제"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -343,7 +453,12 @@ export const AdminPanel: React.FC = () => {
                       </div>
                     </td>
                     <td className="p-4 font-bold text-[#4B352D] dark:text-white truncate max-w-[240px]">
-                      {post.title}
+                      <div className="flex items-center gap-2">
+                        {post.title}
+                        {post.approved === false && (
+                          <span className="px-1.5 py-0.5 text-[9px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded">승인 대기</span>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4 text-xs text-[#746D68] dark:text-[#9E958E] font-mono">
                       {post.createdAt}
@@ -352,13 +467,27 @@ export const AdminPanel: React.FC = () => {
                       💬 {post.comments.length}개
                     </td>
                     <td className="p-4 text-right">
-                      <button
-                        onClick={() => handleDelete(post.id, '친구 소식', () => deleteFriendPost(post.id))}
-                        className="p-2 rounded-lg text-[#B74A45] hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
-                        title="삭제"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        {post.approved === false && (
+                          <button
+                            onClick={() => {
+                              approveFriendPost(post.id);
+                              alert('친구 소식이 성공적으로 승인되었습니다.');
+                            }}
+                            className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 cursor-pointer"
+                            title="승인하기"
+                          >
+                            <CheckCircle size={15} />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(post.id, '친구 소식', () => deleteFriendPost(post.id))}
+                          className="p-2 rounded-lg text-[#B74A45] hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
+                          title="삭제"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -389,7 +518,12 @@ export const AdminPanel: React.FC = () => {
                       </span>
                     </td>
                     <td className="p-4 font-bold text-[#4B352D] dark:text-white truncate max-w-[280px]">
-                      {item.title}
+                      <div className="flex items-center gap-2">
+                        {item.title}
+                        {item.approved === false && (
+                          <span className="px-1.5 py-0.5 text-[9px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded">승인 대기</span>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4 text-xs font-mono text-[#746D68] dark:text-[#9E958E]">
                       {item.fileSize}
@@ -398,13 +532,27 @@ export const AdminPanel: React.FC = () => {
                       📥 {item.downloads}회
                     </td>
                     <td className="p-4 text-right">
-                      <button
-                        onClick={() => handleDelete(item.id, '자료 리소스', () => deleteLibraryItem(item.id))}
-                        className="p-2 rounded-lg text-[#B74A45] hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
-                        title="삭제"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        {item.approved === false && (
+                          <button
+                            onClick={() => {
+                              approveLibraryItem(item.id);
+                              alert('자료실 항목이 성공적으로 승인되었습니다.');
+                            }}
+                            className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 cursor-pointer"
+                            title="승인하기"
+                          >
+                            <CheckCircle size={15} />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(item.id, '자료 리소스', () => deleteLibraryItem(item.id))}
+                          className="p-2 rounded-lg text-[#B74A45] hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
+                          title="삭제"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -438,19 +586,38 @@ export const AdminPanel: React.FC = () => {
                       )}
                     </td>
                     <td className="p-4 font-semibold text-[#4B352D] dark:text-white truncate max-w-[280px]">
-                      {notice.title}
+                      <div className="flex items-center gap-2">
+                        {notice.title}
+                        {notice.approved === false && (
+                          <span className="px-1.5 py-0.5 text-[9px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded">승인 대기</span>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4 text-xs font-mono text-[#746D68] dark:text-[#9E958E]">
                       {notice.createdAt}
                     </td>
                     <td className="p-4 text-right">
-                      <button
-                        onClick={() => handleDelete(notice.id, '공지사항', () => deleteNotice(notice.id))}
-                        className="p-2 rounded-lg text-[#B74A45] hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
-                        title="삭제"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        {notice.approved === false && (
+                          <button
+                            onClick={() => {
+                              approveNotice(notice.id);
+                              alert('공지사항이 성공적으로 승인되었습니다.');
+                            }}
+                            className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 cursor-pointer"
+                            title="승인하기"
+                          >
+                            <CheckCircle size={15} />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(notice.id, '공지사항', () => deleteNotice(notice.id))}
+                          className="p-2 rounded-lg text-[#B74A45] hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
+                          title="삭제"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -471,8 +638,23 @@ export const AdminPanel: React.FC = () => {
                     <div>
                       <span className="font-bold text-sm text-[#4B352D] dark:text-[#DFB775]">{guest.nickname}</span>
                       <span className="text-[10px] text-[#746D68] dark:text-[#9E958E] font-mono ml-2">{guest.createdAt}</span>
+                      {guest.approved === false && (
+                        <span className="ml-2 px-1.5 py-0.5 text-[9px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded">승인 대기</span>
+                      )}
                     </div>
                     <div className="flex items-center gap-1">
+                      {guest.approved === false && (
+                        <button
+                          onClick={() => {
+                            approveGuestbook(guest.id);
+                            alert('방명록 글이 성공적으로 승인되었습니다.');
+                          }}
+                          className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 cursor-pointer"
+                          title="승인하기"
+                        >
+                          <CheckCircle size={15} />
+                        </button>
+                      )}
                       <button
                         onClick={() => {
                           setReplyId(guest.id);

@@ -11,10 +11,13 @@ export const PhotoView: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
 
   // Filter photos based on search query
-  const filteredPhotos = photos.filter((photo) =>
-    photo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    photo.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredPhotos = photos.filter((photo) => {
+    if (photo.approved === false && !isAdmin) return false;
+    return (
+      photo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      photo.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
 
   const handlePhotoClick = (index: number) => {
     setPhotoIndex(index);
@@ -90,6 +93,12 @@ export const PhotoView: React.FC = () => {
                   <Calendar size={9} />
                   {photo.takenAt}
                 </span>
+
+                {photo.approved === false && (
+                  <span className="absolute top-3 left-3 bg-amber-500 text-white font-bold text-[9px] px-2 py-0.5 rounded-md shadow-sm">
+                    승인 대기
+                  </span>
+                )}
               </div>
 
               {/* Title Card Info */}

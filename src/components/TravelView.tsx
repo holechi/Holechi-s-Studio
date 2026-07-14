@@ -15,6 +15,8 @@ export const TravelView: React.FC = () => {
 
   // Filter logic
   const filteredTravels = travels.filter((travel) => {
+    if (travel.approved === false && !isAdmin) return false;
+
     const matchesSearch =
       travel.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       travel.destination.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -135,9 +137,14 @@ export const TravelView: React.FC = () => {
               {/* Text fields */}
               <div className="md:w-7/12 p-6 sm:p-8 flex flex-col justify-between gap-6">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-1.5 text-xs text-[#746D68] dark:text-[#9E958E] font-mono">
-                    <Calendar size={13} />
-                    <span>여정 일정: {travel.date}</span>
+                  <div className="flex items-center gap-3 text-xs text-[#746D68] dark:text-[#9E958E] font-mono flex-wrap">
+                    <div className="flex items-center gap-1.5">
+                      <Calendar size={13} />
+                      <span>여정 일정: {travel.date}</span>
+                    </div>
+                    {travel.approved === false && (
+                      <span className="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold rounded text-[10px]">승인 대기</span>
+                    )}
                   </div>
 
                   <h3 className="font-display font-bold text-lg sm:text-xl text-[#4B352D] dark:text-white leading-snug">

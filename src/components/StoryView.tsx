@@ -20,6 +20,7 @@ export const StoryView: React.FC = () => {
 
   // Filter logic
   const filteredStories = stories.filter((story) => {
+    if (story.approved === false && !isAdmin) return false;
     const matchesCategory = selectedCategory === '전체' || story.category === selectedCategory;
     const matchesSearch =
       story.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -131,6 +132,12 @@ export const StoryView: React.FC = () => {
                     <span>📅 {story.createdAt}</span>
                     <span>•</span>
                     <span>👀 조회수 {story.views}회</span>
+                    {story.approved === false && (
+                      <>
+                        <span>•</span>
+                        <span className="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold rounded text-[10px]">승인 대기</span>
+                      </>
+                    )}
                   </div>
 
                   <h3 className="font-display font-bold text-xl sm:text-2xl text-[#4B352D] dark:text-white leading-tight">

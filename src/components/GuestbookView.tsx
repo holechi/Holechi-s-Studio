@@ -20,11 +20,15 @@ export const GuestbookView: React.FC = () => {
   const [expandedNoticeId, setExpandedNoticeId] = useState<string | null>(null);
 
   // Sorting notices: important ones first
-  const sortedNotices = [...notices].sort((a, b) => {
+  const filteredNotices = notices.filter((notice) => isAdmin || notice.approved !== false);
+  const sortedNotices = [...filteredNotices].sort((a, b) => {
     if (a.isImportant && !b.isImportant) return -1;
     if (!a.isImportant && b.isImportant) return 1;
     return 0;
   });
+
+  // Filter guestbooks
+  const filteredGuestbooks = guestbooks.filter((guest) => isAdmin || guest.approved !== false);
 
   const handleNoticeToggle = (id: string) => {
     setExpandedNoticeId(expandedNoticeId === id ? null : id);
@@ -89,6 +93,11 @@ export const GuestbookView: React.FC = () => {
                     className="p-4 sm:p-5 flex items-center justify-between gap-4 cursor-pointer select-none"
                   >
                     <div className="flex items-center gap-2.5 truncate">
+                      {notice.approved === false && (
+                        <span className="shrink-0 text-[9px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded-md shadow-xs">
+                          승인 대기
+                        </span>
+                      )}
                       {notice.isImportant ? (
                         <span className="shrink-0 text-[9px] font-bold bg-[#C69A52] text-white px-2 py-0.5 rounded-md shadow-xs">
                           📌 필독
@@ -178,14 +187,14 @@ export const GuestbookView: React.FC = () => {
       {/* SECTION 3: Guestbook Feed */}
       <section id="guestbook-feed-cabinet" className="space-y-6">
         <h3 className="font-display font-bold text-lg text-[#4B352D] dark:text-white pb-3 border-b border-[#E6DED5] dark:border-[#3D3330]">
-          친구들이 머물다 간 자리 ({guestbooks.length}개)
+          친구들이 머물다 간 자리 ({filteredGuestbooks.length}개)
         </h3>
 
-        {guestbooks.length === 0 ? (
+        {filteredGuestbooks.length === 0 ? (
           <p className="text-center py-10 text-xs text-[#746D68]">공방을 찾아온 친구의 첫 발자취를 남겨보세요.</p>
         ) : (
           <div className="space-y-6">
-            {guestbooks.map((guest) => (
+            {filteredGuestbooks.map((guest) => (
               <div
                 key={guest.id}
                 className="bg-white dark:bg-[#25201E] border border-[#E6DED5] dark:border-[#3D3330] rounded-2xl p-5 sm:p-6 space-y-4 shadow-2xs"
@@ -199,6 +208,9 @@ export const GuestbookView: React.FC = () => {
                     <div>
                       <span className="font-bold text-xs sm:text-sm text-[#4B352D] dark:text-[#EBE6E1]">{guest.nickname}</span>
                       <span className="text-[10px] text-[#746D68] dark:text-[#9E958E] font-mono ml-2">{guest.createdAt}</span>
+                      {guest.approved === false && (
+                        <span className="ml-2 px-1.5 py-0.5 text-[9px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded">승인 대기</span>
+                      )}
                     </div>
                   </div>
                   <span className="text-[9px] text-gray-300 font-mono select-none">🐾 FOOTPRINT</span>

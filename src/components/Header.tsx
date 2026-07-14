@@ -15,6 +15,7 @@ export const Header: React.FC = () => {
     setIsAdmin,
     imageFitMode,
     setImageFitMode,
+    adminPassword,
   } = useBlog();
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -38,15 +39,14 @@ export const Header: React.FC = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Default admin password '1234'
-    if (passwordInput === '1234') {
+    if (passwordInput === adminPassword) {
       setIsAdmin(true);
       setShowLoginModal(false);
       setPasswordInput('');
       setLoginError('');
       alert('관리자 모드로 로그인되었습니다.');
     } else {
-      setLoginError('비밀번호가 올바르지 않습니다. (팁: 1234)');
+      setLoginError('비밀번호가 올바르지 않습니다.');
     }
   };
 
@@ -465,7 +465,13 @@ export const Header: React.FC = () => {
             </form>
             <div className="mt-4 pt-4 border-t border-[#E6DED5] dark:border-[#3D3330] text-center">
               <span className="text-[10px] text-[#746D68] dark:text-[#9E958E]">
-                기본 설정 비밀번호는 <code className="bg-[#EEE7DE] dark:bg-[#332B28] px-1.5 py-0.5 rounded text-[#4B352D] dark:text-[#DFB775] font-mono">1234</code> 입니다.
+                {adminPassword === '1234' ? (
+                  <>
+                    기본 설정 비밀번호는 <code className="bg-[#EEE7DE] dark:bg-[#332B28] px-1.5 py-0.5 rounded text-[#4B352D] dark:text-[#DFB775] font-mono">1234</code> 입니다.
+                  </>
+                ) : (
+                  <span className="text-[#C69A52] font-semibold">설정된 관리자 비밀번호로 로그인하세요.</span>
+                )}
               </span>
             </div>
           </div>
