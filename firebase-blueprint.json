@@ -1,0 +1,160 @@
+{
+  "entities": {
+    "Story": {
+      "title": "Story",
+      "description": "공방 일지 및 공방 소식 이야기글",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "category": { "type": "string" },
+        "title": { "type": "string", "maxLength": 100 },
+        "content": { "type": "string", "maxLength": 10000 },
+        "imageUrl": { "type": "string", "maxLength": 2048 },
+        "createdAt": { "type": "string" },
+        "views": { "type": "integer" },
+        "likes": { "type": "integer" },
+        "approved": { "type": "boolean" }
+      },
+      "required": ["id", "category", "title", "content", "imageUrl", "createdAt", "views", "likes"]
+    },
+    "Photo": {
+      "title": "Photo",
+      "description": "공방 앨범 사진",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "imageUrl": { "type": "string", "maxLength": 2048 },
+        "takenAt": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "approved": { "type": "boolean" }
+      },
+      "required": ["id", "title", "description", "imageUrl", "takenAt", "createdAt"]
+    },
+    "Travel": {
+      "title": "Travel",
+      "description": "공방 여행기 및 여정 기록",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "destination": { "type": "string", "maxLength": 100 },
+        "title": { "type": "string", "maxLength": 100 },
+        "content": { "type": "string", "maxLength": 10000 },
+        "imageUrl": { "type": "string", "maxLength": 2048 },
+        "date": { "type": "string" },
+        "tags": { "type": "array" },
+        "approved": { "type": "boolean" }
+      },
+      "required": ["id", "destination", "title", "content", "imageUrl", "date", "tags"]
+    },
+    "FriendPost": {
+      "title": "FriendPost",
+      "description": "친구들이 올리는 정겨운 소식 게시물",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nickname": { "type": "string", "maxLength": 50 },
+        "avatarUrl": { "type": "string", "maxLength": 2048 },
+        "title": { "type": "string", "maxLength": 100 },
+        "content": { "type": "string", "maxLength": 10000 },
+        "imageUrl": { "type": "string", "maxLength": 2048 },
+        "createdAt": { "type": "string" },
+        "likes": { "type": "integer" },
+        "comments": { "type": "array" },
+        "approved": { "type": "boolean" }
+      },
+      "required": ["id", "nickname", "title", "content", "createdAt", "likes", "comments"]
+    },
+    "LibraryItem": {
+      "title": "LibraryItem",
+      "description": "공유된 공방 자료실 파일 정보",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "fileType": { "type": "string" },
+        "fileSize": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "downloads": { "type": "integer" },
+        "approved": { "type": "boolean" }
+      },
+      "required": ["id", "title", "fileType", "fileSize", "createdAt", "downloads"]
+    },
+    "Notice": {
+      "title": "Notice",
+      "description": "공방 이용 안내 공지사항",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "content": { "type": "string", "maxLength": 10000 },
+        "createdAt": { "type": "string" },
+        "isImportant": { "type": "boolean" },
+        "approved": { "type": "boolean" }
+      },
+      "required": ["id", "title", "content", "createdAt", "isImportant"]
+    },
+    "Guestbook": {
+      "title": "Guestbook",
+      "description": "친구들의 방문 방명록 발자취",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nickname": { "type": "string", "maxLength": 50 },
+        "content": { "type": "string", "maxLength": 2000 },
+        "createdAt": { "type": "string" },
+        "adminReply": { "type": "string", "maxLength": 2000 },
+        "approved": { "type": "boolean" }
+      },
+      "required": ["id", "nickname", "content", "createdAt"]
+    },
+    "GlobalSettings": {
+      "title": "GlobalSettings",
+      "description": "공방의 글로벌 비밀번호 및 방문자 통계 등",
+      "type": "object",
+      "properties": {
+        "adminPassword": { "type": "string", "maxLength": 100 },
+        "todayVisitors": { "type": "integer" },
+        "totalVisitors": { "type": "integer" },
+        "showVisitorCount": { "type": "boolean" },
+        "lastVisitDate": { "type": "string" }
+      },
+      "required": ["adminPassword", "todayVisitors", "totalVisitors", "showVisitorCount", "lastVisitDate"]
+    }
+  },
+  "firestore": {
+    "/stories/{storyId}": {
+      "schema": "Story",
+      "description": "이야기글 컬렉션"
+    },
+    "/photos/{photoId}": {
+      "schema": "Photo",
+      "description": "앨범 사진 컬렉션"
+    },
+    "/travels/{travelId}": {
+      "schema": "Travel",
+      "description": "여행기 컬렉션"
+    },
+    "/friendPosts/{postId}": {
+      "schema": "FriendPost",
+      "description": "친구 소식 컬렉션"
+    },
+    "/libraryItems/{itemId}": {
+      "schema": "LibraryItem",
+      "description": "자료실 컬렉션"
+    },
+    "/notices/{noticeId}": {
+      "schema": "Notice",
+      "description": "공지사항 컬렉션"
+    },
+    "/guestbooks/{guestId}": {
+      "schema": "Guestbook",
+      "description": "방명록 컬렉션"
+    },
+    "/settings/{settingsId}": {
+      "schema": "GlobalSettings",
+      "description": "설정 및 방문자 수 데이터 저장"
+    }
+  }
+}
